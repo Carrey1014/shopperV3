@@ -1,88 +1,60 @@
 <template>
     <div id="home">
-        <!-- 顶部导航栏 -->
+        <!-- 1. 顶部导航栏 -->
         <navbar class="home-nav"><div slot="center">购物街</div></navbar>
-        <!-- 轮播图 -->
+        <!-- 2. 轮播图 -->
         <img src="@/assets/img/carreyIMG/banner.jpg">
-        <!-- 推荐信息 -->
+        <!-- 3. 推荐信息 -->
         <homeDisplay :recommends = "recommend"></homeDisplay>
-        <!-- 特色推荐 -->
+        <!-- 4. 特色推荐 -->
         <featureView/>
-        <tabControl class="tab-Control" :titles = "['流行', '新款', '推荐']" />
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
-        <div>123</div>
+        <!-- 5. 流行，新款和推荐按钮 -->
+        <tabControl class="tab-Control" :titles = "['流行', '新款', '推荐']" @tabClick = "tabClick"/>
+        <!-- 6. 流行，新款和推荐列表 -->
+        <goodsBox>
+            <goodsItem v-for = "(item, index) in goods[currentType].list" :key="index" :imgLink = "item.img" :imgTitle = "item.name" />
+        </goodsBox>
+
+
     </div>
 </template>
 
 <script>
+// 导入common公共组件
 import navbar from '@/components/common/navbar';
 import tabControl from '@/components/common/tabControl';
+import {goodsItem, goodsBox} from '@/components/common/goods';
 
+// 导入home页专属组件
 import homeDisplay from './homeComponents/homeDisplay';
 import featureView from './homeComponents/featureView';
 
+// 导入模块
+import {HomeData, GoodsData} from '@/network/home.js';
 
-import {HomeData} from '@/network/home.js';
 export default {
     name: 'home',
     components:{
         navbar,
         tabControl,
+        goodsItem, 
+        goodsBox,
+
         homeDisplay,
         featureView,
+        
     },
     data(){
         return {
             result: null,
             banner: null,
-            recommend: null
+            recommend: null,
+            goods:{
+                pop: {page: 0, list: []},
+                new: {page: 0, list: []},
+                sell: {page: 0, list: []},
+            },
+            currentType: 'pop',
         }
     },
     computed: {
@@ -91,12 +63,51 @@ export default {
         }
     },
     created(){
-        // 这里在该组件创建完成时就进行网络请求
-        HomeData().then(res => {
-            this.result = res;
-            this.banner = res.data.banner.list
-            this.recommend = res.data.recommend.list;
-        })
+        // // 1. 这里在该组件创建完成时就进行网络请求
+        this.getHomeData();
+
+        // 2. 请求商品数据
+        this.getGoodsData('pop');
+        this.getGoodsData('new');
+        this.getGoodsData('sell');
+    },
+    methods:{
+        /**
+         *  事件监听相关的方法
+         * */ 
+        tabClick(tabClick){
+            switch(tabClick){
+                case 0:
+                    this.currentType = 'pop';
+                    break;
+                case 1:
+                    this.currentType = 'new';
+                    break;
+                case 2:
+                    this.currentType = 'sell';
+                    break;
+            }
+        },
+
+        /**
+         *  数据获取相关的方法
+         * */ 
+        getHomeData(){
+            HomeData().then(res => {
+                this.result = res;
+                this.banner = res.data.banner.list
+                this.recommend = res.data.recommend.list;
+            })
+        },
+        getGoodsData(type){
+            var page = this.goods[type].page + 1;
+            GoodsData(type, page).then(res => {
+                this.goods[type].list.push(...res[type][page].goods);
+                this.goods[type].page += 1;
+                // console.log(res[type][page].goods)
+            })
+        }
+        
     }
 }
 </script>

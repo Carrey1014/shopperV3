@@ -24,5 +24,6 @@ export function request(config){
     })
 
     // 3. 正式发送网络请求
+    // console.log(instance(config))
     return instance(config);
 }

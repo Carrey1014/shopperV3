@@ -11,7 +11,7 @@ export default {
     name: 'tabControl',
     data(){
         return {
-            isActive: 0
+            isActive: 0,
         }
     },
     props: {
@@ -23,6 +23,8 @@ export default {
     methods:{
         chosed(index){
             this.isActive = index;
+            this.$emit('tabClick', index);
+            // console.log(index);
         }
     }
 }
