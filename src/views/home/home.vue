@@ -2,18 +2,47 @@
     <div id="home">
         <!-- 1. 顶部导航栏 -->
         <navbar class="home-nav"><div slot="center">购物街</div></navbar>
-        <!-- 2. 轮播图 -->
-        <img src="@/assets/img/carreyIMG/banner.jpg">
-        <!-- 3. 推荐信息 -->
-        <homeDisplay :recommends = "recommend"></homeDisplay>
-        <!-- 4. 特色推荐 -->
-        <featureView/>
-        <!-- 5. 流行，新款和推荐按钮 -->
-        <tabControl class="tab-Control" :titles = "['流行', '新款', '推荐']" @tabClick = "tabClick"/>
-        <!-- 6. 流行，新款和推荐列表 -->
-        <goodsBox>
-            <goodsItem v-for = "(item, index) in goods[currentType].list" :key="index" :imgLink = "item.img" :imgTitle = "item.name" />
-        </goodsBox>
+        <scroll class="scroll-content">
+            <!-- 2. 轮播图 -->
+            <img src="@/assets/img/carreyIMG/banner.jpg">
+            <!-- 3. 推荐信息 -->
+            <homeDisplay :recommends = "recommend"></homeDisplay>
+            <!-- 4. 特色推荐 -->
+            <featureView/>
+            <!-- 5. 流行，新款和推荐按钮 -->
+            <tabControl class="tab-Control" :titles = "['流行', '新款', '推荐']" @tabClick = "tabClick"/>
+            <!-- 6. 流行，新款和推荐列表 -->
+            <goodsBox>
+                <goodsItem v-for = "(item, index) in goods[currentType].list" :key="index" :imgLink = "item.img" :imgTitle = "item.name" />
+            </goodsBox>
+        </scroll>
+        
+        <div class="next">
+            <div>15</div>
+            <div>123</div>
+            <div>123</div>
+            <div>123</div>
+            <div>123</div>
+            <div>123</div>
+            <div>123</div>
+            <div>123</div>
+            <div>123</div>
+            <div>123</div>
+            <div>123</div>
+            <div>123</div>
+            <div>123</div>
+            <div>123</div>
+            <div>123</div>
+            <div>123</div>
+            <div>123</div>
+            <div>123</div>
+            <div>123</div>
+            <div>123</div>
+            <div>123</div>
+            <div>123</div>
+            <div>123</div>
+        </div>
+        
 
 
     </div>
@@ -24,6 +53,7 @@
 import navbar from '@/components/common/navbar';
 import tabControl from '@/components/common/tabControl';
 import {goodsItem, goodsBox} from '@/components/common/goods';
+import scroll from '@/components/common/scroll/scroll';
 
 // 导入home页专属组件
 import homeDisplay from './homeComponents/homeDisplay';
@@ -35,11 +65,14 @@ import {HomeData, GoodsData} from '@/network/home.js';
 export default {
     name: 'home',
     components:{
+        // 注册common组件
         navbar,
         tabControl,
         goodsItem, 
         goodsBox,
+        scroll,
 
+        // 注册homen专属组件
         homeDisplay,
         featureView,
         
@@ -113,6 +146,10 @@ export default {
 </script>
 
 <style>
+#home{
+    height: 100vh;
+    position: relative;
+}
 .home-nav{
     position: fixed;
     left: 0px; top: 0px; right: 0px;
@@ -124,6 +161,10 @@ export default {
     position: sticky;
     top: 44px;
 }
-
+.scroll-content{
+    position: absolute;
+    left: 0px; top: 44px; right: 0px; bottom: 44px;
+    overflow: hidden;
+}
 
 </style>
