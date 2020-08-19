@@ -2,7 +2,7 @@
     <div id="home">
         <!-- 1. 顶部导航栏 -->
         <navbar class="home-nav"><div slot="center">购物街</div></navbar>
-        <scroll class="scroll-content">
+        <scroll class="scroll-content" ref="scrollback" :probe-type = "3" @scrollPos = "Scrolled">
             <!-- 2. 轮播图 -->
             <img src="@/assets/img/carreyIMG/banner.jpg">
             <!-- 3. 推荐信息 -->
@@ -16,34 +16,7 @@
                 <goodsItem v-for = "(item, index) in goods[currentType].list" :key="index" :imgLink = "item.img" :imgTitle = "item.name" />
             </goodsBox>
         </scroll>
-        
-        <div class="next">
-            <div>15</div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
-            <div>123</div>
-        </div>
-        
-
+        <backToTop v-show="isShow" @click.native = "backToTop()"/>
 
     </div>
 </template>
@@ -54,6 +27,7 @@ import navbar from '@/components/common/navbar';
 import tabControl from '@/components/common/tabControl';
 import {goodsItem, goodsBox} from '@/components/common/goods';
 import scroll from '@/components/common/scroll/scroll';
+import backToTop from '@/components/common/backToTop/backToTop';
 
 // 导入home页专属组件
 import homeDisplay from './homeComponents/homeDisplay';
@@ -71,6 +45,7 @@ export default {
         goodsItem, 
         goodsBox,
         scroll,
+        backToTop,
 
         // 注册homen专属组件
         homeDisplay,
@@ -88,6 +63,7 @@ export default {
                 sell: {page: 0, list: []},
             },
             currentType: 'pop',
+            isShow: false,
         }
     },
     computed: {
@@ -121,10 +97,20 @@ export default {
                     break;
             }
         },
+        backToTop(){
+            this.$refs.scrollback.scrollback(0,0);
+        },
+        Scrolled(pos){
+            if(pos.y <= -500){
+                this.isShow = true;
+            }else{
+                this.isShow = false;
+            }
+        },
 
         /**
          *  数据获取相关的方法
-         * */ 
+         * */
         getHomeData(){
             HomeData().then(res => {
                 this.result = res;
@@ -137,7 +123,6 @@ export default {
             GoodsData(type, page).then(res => {
                 this.goods[type].list.push(...res[type][page].goods);
                 this.goods[type].page += 1;
-                // console.log(res[type][page].goods)
             })
         }
         
@@ -145,10 +130,10 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 #home{
     height: 100vh;
-    position: relative;
+    /* position: relative; */
 }
 .home-nav{
     position: fixed;
@@ -162,9 +147,14 @@ export default {
     top: 44px;
 }
 .scroll-content{
-    position: absolute;
-    left: 0px; top: 44px; right: 0px; bottom: 44px;
+    margin-top: 44px;
+    height: calc(100% - 84px);
     overflow: hidden;
 }
+/* .scroll-content{
+    position: absolute;
+    left: 0px; top: 44px; right: 0px; bottom: 40px;
+    overflow: hidden;
+} */
 
 </style>

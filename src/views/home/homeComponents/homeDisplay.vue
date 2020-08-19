@@ -21,7 +21,7 @@ export default {
 }
 </script>
 
-<style>
+<style  scoped>
 .homeDisplay{
     display: flex;
     justify-content: space-evenly;

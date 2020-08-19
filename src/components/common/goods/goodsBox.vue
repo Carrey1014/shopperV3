@@ -15,7 +15,7 @@ export default {
 }
 </script>
 
-<style>
+<style  scoped>
 #goodsBox{
     display: flex;
     flex-wrap: wrap;

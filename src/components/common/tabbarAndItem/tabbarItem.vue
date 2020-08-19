@@ -38,10 +38,9 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 #item{
     text-align: center;
-
 }
 #item img{
     width: 24px;
@@ -49,6 +48,7 @@ export default {
 }
 .active{
     font-size: 16px;
+    line-height: 16px;
     font-weight: bold;
 }
 </style>

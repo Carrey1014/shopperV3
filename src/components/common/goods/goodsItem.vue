@@ -19,7 +19,7 @@ export default {
 }
 </script>
 
-<style>
+<style  scoped>
 #goodsItem{
     text-align: center;
     width: 180px;
