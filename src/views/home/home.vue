@@ -2,7 +2,8 @@
     <div id="home">
         <!-- 1. 顶部导航栏 -->
         <navbar class="home-nav"><div slot="center">购物街</div></navbar>
-        <scroll class="scroll-content" ref="scrollback" :probe-type = "3" @scrollPos = "Scrolled">
+        <scroll class="scroll-content" ref="scroll" :probe-type = "3" 
+                @scrollPos = "Scrolled" :pullUpLoad = "true"  @moreData = "moreGoodsData()">
             <!-- 2. 轮播图 -->
             <img src="@/assets/img/carreyIMG/banner.jpg">
             <!-- 3. 推荐信息 -->
@@ -13,7 +14,7 @@
             <tabControl class="tab-Control" :titles = "['流行', '新款', '推荐']" @tabClick = "tabClick"/>
             <!-- 6. 流行，新款和推荐列表 -->
             <goodsBox>
-                <goodsItem v-for = "(item, index) in goods[currentType].list" :key="index" :imgLink = "item.img" :imgTitle = "item.name" />
+                <goodsItem v-for = "(item, index) in goods[currentType].list" :key="index" :imgLink = "item.img" :imgTitle = "item.name"/>
             </goodsBox>
         </scroll>
         <backToTop v-show="isShow" @click.native = "backToTop()"/>
@@ -34,7 +35,7 @@ import homeDisplay from './homeComponents/homeDisplay';
 import featureView from './homeComponents/featureView';
 
 // 导入模块
-import {HomeData, GoodsData} from '@/network/home.js';
+import {HomeData, GoodsData$test, GoodsData} from '@/network/home.js';
 
 export default {
     name: 'home',
@@ -98,7 +99,7 @@ export default {
             }
         },
         backToTop(){
-            this.$refs.scrollback.scrollback(0,0);
+            this.$refs.scroll.scrollback(0,0);
         },
         Scrolled(pos){
             if(pos.y <= -500){
@@ -106,6 +107,9 @@ export default {
             }else{
                 this.isShow = false;
             }
+        },
+        moreGoodsData(){
+            this.getGoodsData(this.currentType);
         },
 
         /**
@@ -121,11 +125,11 @@ export default {
         getGoodsData(type){
             var page = this.goods[type].page + 1;
             GoodsData(type, page).then(res => {
-                this.goods[type].list.push(...res[type][page].goods);
+                this.goods[type].list.push(...res);
                 this.goods[type].page += 1;
+                this.$refs.scroll.finishPullUp();   // 该条语句为什么不能放在GoodsData函数的后面
             })
         }
-        
     }
 }
 </script>
@@ -133,7 +137,6 @@ export default {
 <style scoped>
 #home{
     height: 100vh;
-    /* position: relative; */
 }
 .home-nav{
     position: fixed;
@@ -151,10 +154,5 @@ export default {
     height: calc(100% - 84px);
     overflow: hidden;
 }
-/* .scroll-content{
-    position: absolute;
-    left: 0px; top: 44px; right: 0px; bottom: 40px;
-    overflow: hidden;
-} */
 
 </style>
