@@ -1089,7 +1089,8 @@ const md = {
 }
 export function GoodsData(type, page){
     return new Promise((resolve, reject) => {
-        // console.log(md[type][page].goods);
+		// console.log(md[type][page].goods);
+		// setTimeout(console.log('延时了1秒钟！'), 3000);
         resolve(md[type][page].goods);
         reject("请求失败了");
     })

@@ -1,7 +1,7 @@
 <template>
     <div id="goodsItem">
         <div class="link">
-            <img :src="imgLink" :alt="imgLink">
+            <img :src="imgLink" :alt="imgLink" @load = "imgloaded()">
         </div>
         <div class="title">
             {{imgTitle}}
@@ -15,6 +15,11 @@ export default {
     props: {
         imgLink: String,
         imgTitle: String,
+    },
+    methods:{
+        imgloaded(){
+            this.$bus.$emit("imgloaded");
+        }
     }
 }
 </script>

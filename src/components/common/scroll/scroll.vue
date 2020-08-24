@@ -41,18 +41,20 @@ export default {
             this.$emit('scrollPos', pos);
         });
 
+        console.log(this.BS);
+
         // 4. 监听上拉加载更多
-        this.BS.on('pullingUp', () => {
-            console.log("上拉加载更多");
-            this.$emit('moreData');
-        })
+        // this.BS.on('pullingUp', () => {
+        //     console.log("上拉加载更多");
+        //     this.$emit('moreData');
+        // })
     },
     methods:{
         scrollback(x, y, time = 500){
             this.BS.scrollTo(x, y, time);
         },
-        finishPullUp(){
-            this.BS.finishPullUp();
+        refresh(){
+            this.BS.refresh();
         }
     }
 }

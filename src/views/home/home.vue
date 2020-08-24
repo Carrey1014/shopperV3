@@ -3,22 +3,21 @@
         <!-- 1. 顶部导航栏 -->
         <navbar class="home-nav"><div slot="center">购物街</div></navbar>
         <scroll class="scroll-content" ref="scroll" :probe-type = "3" 
-                @scrollPos = "Scrolled" :pullUpLoad = "true"  @moreData = "moreGoodsData()">
+                @scrollPos = "Scrolled" :pullUpLoad = "true">
             <!-- 2. 轮播图 -->
             <img src="@/assets/img/carreyIMG/banner.jpg">
             <!-- 3. 推荐信息 -->
             <homeDisplay :recommends = "recommend"></homeDisplay>
             <!-- 4. 特色推荐 -->
             <featureView/>
-            <!-- 5. 流行，新款和推荐按钮 -->
-            <tabControl class="tab-Control" :titles = "['流行', '新款', '推荐']" @tabClick = "tabClick"/>
+            <!-- 5. 流行，新款和推荐按钮 @tabClick = "tabClick" -->
+            <tabControl class="tab-Control" :titles = "['流行', '新款', '推荐']"/>
             <!-- 6. 流行，新款和推荐列表 -->
             <goodsBox>
                 <goodsItem v-for = "(item, index) in goods[currentType].list" :key="index" :imgLink = "item.img" :imgTitle = "item.name"/>
             </goodsBox>
         </scroll>
         <backToTop v-show="isShow" @click.native = "backToTop()"/>
-
     </div>
 </template>
 
@@ -80,11 +79,17 @@ export default {
         this.getGoodsData('pop');
         this.getGoodsData('new');
         this.getGoodsData('sell');
+
+        //3. 监听goodsItem中的图片是否加载完成
+        this.$bus.$on('imgloaded', () => {
+            this.$refs.scroll.refresh();
+        })
     },
     methods:{
         /**
          *  事件监听相关的方法
          * */ 
+        // 1. 监听点击的内容
         tabClick(tabClick){
             switch(tabClick){
                 case 0:
@@ -98,6 +103,8 @@ export default {
                     break;
             }
         },
+
+        // 2. 返回顶部
         backToTop(){
             this.$refs.scroll.scrollback(0,0);
         },
@@ -108,9 +115,10 @@ export default {
                 this.isShow = false;
             }
         },
-        moreGoodsData(){
-            this.getGoodsData(this.currentType);
-        },
+
+        // moreGoodsData(){
+        //     this.getGoodsData(this.currentType);
+        // },
 
         /**
          *  数据获取相关的方法
@@ -127,7 +135,7 @@ export default {
             GoodsData(type, page).then(res => {
                 this.goods[type].list.push(...res);
                 this.goods[type].page += 1;
-                this.$refs.scroll.finishPullUp();   // 该条语句为什么不能放在GoodsData函数的后面
+                // this.$refs.scroll.finishPullUp();   // 该条语句为什么不能放在GoodsData函数的后面
             })
         }
     }
